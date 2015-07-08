@@ -1,2 +1,2 @@
 # stuff
-Various useful script
+Various useful scripts
