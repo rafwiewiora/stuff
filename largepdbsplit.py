@@ -54,8 +54,9 @@ def extract_models(multi_model_PDB_file):
     modelcounter = 0
     new_file_text = ""
     for line in the_multi_file_stream:
-        line = line.strip () #for better control of ends of lines
+        line = line.strip() #for better control of ends of lines
         if line == "ENDMDL":
+            new_file_text += line + '\n'
             modelcounter += 1
             if modelcounter < 100:
                 continue
@@ -72,8 +73,13 @@ def extract_models(multi_model_PDB_file):
                 modelcounter = 0
         else:
             new_file_text += line + '\n'
-    #Completed scan of input file and therefore close file, fix model number,
-    # and return results.
+    # the loop won't have saved unless reached 100 models - for files with less & last set of models for files with NOT exactly x00 models need to save the last set. I.e. check if something left in new_file_text, if so - save.
+    if new_file_text:
+        output_file = open(generated_output_files_prefix +"_model_" + str(
+            model_number) + ".pdb", "w")
+        output_file.write(new_file_text.rstrip('\r\n'))
+        output_file.close()        
+
     the_multi_file_stream.close()
     # The model number will be one higher than it should be because the process
     # of resetting for the next model adds one the model counter, even when
